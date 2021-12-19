@@ -10,7 +10,7 @@ namespace Tricount.DAL
 {
     public class PotCommunDepot_DAL : Depot_DAL<PotCommun_DAL>
     {
-
+        //Méthode getall qui permet alors la récuperation de tout
         public override List<PotCommun_DAL> GetAll()
         {
             CreerConnexionEtCommande();
@@ -33,8 +33,31 @@ namespace Tricount.DAL
 
             return listeDePotCommun;
         }
-
+        //Cette méthode permet la recupération mais par ID
         public override PotCommun_DAL GetByID(int ID)
+        {
+            CreerConnexionEtCommande();
+
+            commande.CommandText = "select id, DateSoiree, Lieu from PotCommun where id=@id";
+            commande.Parameters.Add(new SqlParameter("@id", ID));
+            var reader = commande.ExecuteReader();
+
+            PotCommun_DAL p;
+            if (reader.Read())
+            {
+                p = new PotCommun_DAL(reader.GetInt32(0),
+                                    reader.GetDateTime(1),
+                                    reader.GetString(2));
+            }
+            else
+                throw new Exception($"Pas de Pot commun dans la BDD avec l'ID {ID}");
+
+            DetruireConnexionEtCommande();
+
+            return p;
+        }
+        //Celle ci la récupération de tou l'est ID
+        public List<PotCommun_DAL> GetAllByID(int ID)
         {
             CreerConnexionEtCommande();
 
@@ -56,9 +79,9 @@ namespace Tricount.DAL
 
             DetruireConnexionEtCommande();
 
-            return p;
+            return listeDePotCommun;
         }
-
+        //Ici on insère dans la Base de donnée
         public override PotCommun_DAL Insert(PotCommun_DAL PotCommun)
         {
             CreerConnexionEtCommande();
@@ -76,7 +99,7 @@ namespace Tricount.DAL
 
             return PotCommun;
         }
-
+        //Ici on modifie des valeurs de la base de donnée style la Date d'une soiree
         public override PotCommun_DAL Update(PotCommun_DAL potCommun)
         {
             CreerConnexionEtCommande();
@@ -97,7 +120,7 @@ namespace Tricount.DAL
 
             return potCommun;
         }
-
+        //On Supprime totalement un PotCommun
         public override void Delete(PotCommun_DAL potCommun)
         {
             CreerConnexionEtCommande();

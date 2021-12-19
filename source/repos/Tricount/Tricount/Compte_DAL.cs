@@ -6,16 +6,20 @@ namespace Tricount.DAL
 {
     public class Compte_DAL
     {
+        //Déclaration des entrer de la Base de donnée
         public int ID { get;  set; }
         public string Prenom { get; set; }
         public string Nom { get; set; }
         public int id_Soiree { get; set; }
 
+        //Constructeur 
         public Compte_DAL(int id, string prenom, string nom,int id_soiree ) => (ID,Prenom,Nom, id_Soiree)=(id,prenom,nom, id_soiree);
 
         public Compte_DAL( string prenom, string nom, int id_soiree) => (  Prenom, Nom, id_Soiree) = (  prenom, nom, id_soiree);
 
+        public Compte_DAL(string prenom, string nom) => (Prenom, Nom) = (prenom, nom);
 
+        //Insert dans la Base de donnée
         internal void Insert(SqlConnection connexion)
         {
             using (var commande = new SqlCommand())

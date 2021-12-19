@@ -10,6 +10,7 @@ namespace Tricount.DAL
 {
     public class CompteDepot_DAL : Depot_DAL<Compte_DAL>
     {
+        //Méthode getall qui permet alors la récuperation de tout
         public override List<Compte_DAL> GetAll()
         {
             CreerConnexionEtCommande();
@@ -33,7 +34,7 @@ namespace Tricount.DAL
 
             return listeDeCompte;
         }
-
+        //Cette méthode permet la recupération mais par ID
         public override Compte_DAL GetByID(int ID)
         {
             CreerConnexionEtCommande();
@@ -59,7 +60,33 @@ namespace Tricount.DAL
 
             return p;
         }
+        //Celle ci la récupération de tou l'est ID 
+        public List<Compte_DAL> GetAllByID(int ID)
+        {
+            CreerConnexionEtCommande();
 
+            commande.CommandText = "select id, Prenom, Nom,id_Soiree from Compte where id=@id";
+            commande.Parameters.Add(new SqlParameter("@id", ID));
+            var reader = commande.ExecuteReader();
+
+            var listeDeCompte = new List<Compte_DAL>();
+
+            Compte_DAL p;
+            if (reader.Read())
+            {
+                p = new Compte_DAL(reader.GetInt32(0),
+                                    reader.GetString(1),
+                                    reader.GetString(2),
+                                    reader.GetInt32(3));
+            }
+            else
+                throw new Exception($"Pas de Compte dans la BDD avec l'ID {ID}");
+
+            DetruireConnexionEtCommande();
+
+            return listeDeCompte;
+        }
+        //Ici on insère dans la Base de donnée
         public override Compte_DAL Insert(Compte_DAL compte)
         {
             CreerConnexionEtCommande();
@@ -78,7 +105,7 @@ namespace Tricount.DAL
 
             return compte;
         }
-
+        //Ici on modifie des valeurs de la base de donnée style le Prenom 
         public override Compte_DAL Update(Compte_DAL compte)
         {
             CreerConnexionEtCommande();
@@ -101,7 +128,7 @@ namespace Tricount.DAL
 
             return compte;
         }
-
+        //On Supprime totalement un compte
         public override void Delete(Compte_DAL compte)
         {
             CreerConnexionEtCommande();

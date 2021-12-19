@@ -10,7 +10,7 @@ namespace Tricount
 {
     public class PotCommunCompteDepot_DAL : Depot_DAL<PotCommunCompte_DAL>
     {
-
+        //Méthode getall qui permet alors la récuperation de tout
         public override List<PotCommunCompte_DAL> GetAll()
         {
             CreerConnexionEtCommande();
@@ -34,7 +34,7 @@ namespace Tricount
 
             return listeDeCompte;
         }
-
+        //Cette méthode permet la recupération mais par ID
         public override PotCommunCompte_DAL GetByID(int ID)
         {
             CreerConnexionEtCommande();
@@ -60,7 +60,33 @@ namespace Tricount
 
             return p;
         }
+        //Celle ci la récupération de tou l'est ID
+        public List<PotCommunCompte_DAL> GetAllByID(int ID)
+        {
+            CreerConnexionEtCommande();
 
+            commande.CommandText = "select id,Montant, id_PotCommun, id_Compte from PotCommunCompte where id=@id";
+            commande.Parameters.Add(new SqlParameter("@id", ID));
+            var reader = commande.ExecuteReader();
+
+            var listeDeCompte = new List<PotCommunCompte_DAL>();
+
+            PotCommunCompte_DAL p;
+            if (reader.Read())
+            {
+                p = new PotCommunCompte_DAL(reader.GetInt32(0),
+                                    reader.GetDouble(1),
+                                    reader.GetInt32(2),
+                                    reader.GetInt32(3));
+            }
+            else
+                throw new Exception($"Rien dans la BDD avec l'ID {ID}");
+
+            DetruireConnexionEtCommande();
+
+            return listeDeCompte;
+        }
+        //Ici on insère dans la Base de donnée
         public override PotCommunCompte_DAL Insert(PotCommunCompte_DAL PotCommun)
         {
             CreerConnexionEtCommande();
@@ -80,7 +106,7 @@ namespace Tricount
 
             return PotCommun;
         }
-
+        //Ici on modifie des valeurs de la base de donnée style le Montant
         public override PotCommunCompte_DAL Update(PotCommunCompte_DAL PotCommun)
         {
             CreerConnexionEtCommande();
@@ -102,7 +128,7 @@ namespace Tricount
 
             return PotCommun;
         }
-
+        //On Supprime totalement un PotCommun
         public override void Delete(PotCommunCompte_DAL PotCommun)
         {
             CreerConnexionEtCommande();
