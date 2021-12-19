@@ -9,12 +9,13 @@ namespace Tricount.DAL
 {
     public class PotCommunCompte_DAL
     {
-
+        //Déclaration des entrer de la Base de donnée
         public int ID { get;  set; }
         public int id_PotCommun { get; set; }
         public int id_Compte { get; set; }
         public double Montant { get; set; }
 
+        //Constructeur
         public PotCommunCompte_DAL(int id, double montant,int id_potcommun, int id_compte)
            => (ID, Montant, id_PotCommun, id_Compte ) = (id, montant,id_potcommun, id_compte);
 
@@ -22,7 +23,7 @@ namespace Tricount.DAL
            => ( Montant, id_PotCommun, id_Compte) = ( montant, id_potcommun, id_compte);
 
 
-
+        //Insert dans la Base de donnée
         internal void Insert(SqlConnection connexion)
         {
             using (var commande = new SqlCommand())
